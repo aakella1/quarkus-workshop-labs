@@ -10,7 +10,7 @@ Make sure you check-out this repository from git and open it with [VSCode](https
 Instructions are based on [VSCode Didact](https://github.com/redhat-developer/vscode-didact), so make sure it's installed
 from the VSCode extensions marketplace.
 
-From the VSCode UI, right-click on the `Quarkus.Hello-World.didact.md` file and select "Didact: Start Didact tutorial from File". A new Didact tab will be opened in VS Code.
+From the VSCode UI, right-click on the `02-Quarkus.CDI.didact.md` file and select "Didact: Start Didact tutorial from File". A new Didact tab will be opened in VS Code.
 
 [Make sure you've checked all the requirements](./requirements.didact.md) before jumping into the tutorial section.
 
