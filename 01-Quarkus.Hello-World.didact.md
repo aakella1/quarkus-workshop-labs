@@ -1,5 +1,5 @@
 
-# Welcome to Quarkus on Didact!
+# Welcome to Quarkus Hello World
 
 In this step, you will create a straightforward application serving a hello endpoint. To demonstrate dependency injection this endpoint uses a greeting bean.
 

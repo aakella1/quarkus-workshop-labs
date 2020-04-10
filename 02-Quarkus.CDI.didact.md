@@ -1,5 +1,5 @@
 
-# Welcome to Quarkus and CDI on Didact!
+# Welcome to Quarkus and CDI
 
 In this step, we’ll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the Contexts and Dependency Injection for Java 2.0 specification.
 
