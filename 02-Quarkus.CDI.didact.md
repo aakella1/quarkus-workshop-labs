@@ -1,7 +1,7 @@
 
-# Welcome to Quarkus on Didact!
+# Welcome to Quarkus and CDI on Didact!
 
-In this step, you will create a straightforward application serving a hello endpoint. To demonstrate dependency injection this endpoint uses a greeting bean.
+In this step, we’ll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the Contexts and Dependency Injection for Java 2.0 specification.
 
 ## Before you begin
 
@@ -45,11 +45,34 @@ You need to connect to an OpenShift cluster in order to run the examples.
 
 *Status: unknown*{#cluster-requirements-status}
 
-## 1. Quick Peek - Quarkus Hello World
+## 1. Quick Peek - Quarkus CDI
 
-The Hello World program is in `GreetingResource.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}).
+For CDI, we work on an injectable bean that implements a `greeting()` method returning a string `hello <hostname>` (where `<hostname>` is the Linux hostname of the machine on which the code runs).
 
-> **Note:** Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
+The program is in `GreetingService.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/service/GreetingService.java&completion=Opened%20the%20GreetingService.java%20file "Opens the GreetingService.java file"){.didact}).
+
+Next, open the existing `GreetingResource.java`([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}) file (in the `org.acme.people.rest` package) and notice the `greeting` method.
+
+>```    
+>    @Inject
+>    GreetingService service;
+>
+>    @GET
+>    @Produces(MediaType.TEXT_PLAIN)
+>    @Path("/greeting/{name}")
+>    public String greeting(@PathParam("name") String name) {
+>        return service.greeting(name);
+>    }
+>```
+
+This will cause our new `GreetingResource` class to be instantiated and injected as the `service` field, and then the method `greeting` accesses this service to return the name.
+
+>Notice the necessary imports below the existing import statements near the top of the `GreetingResource.java` file:
+>```
+>import javax.inject.Inject;
+>import org.acme.people.service.GreetingService;
+>import javax.ws.rs.PathParam;
+>```
 
 ## 2. Running in Dev Mode - Quarkus Hello World 
 
@@ -63,76 +86,22 @@ mvn compile quarkus:dev
 
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$mvn%20compile%20quarkus:dev&completion=Run%20live%20coding. "Opens a new terminal and sends the command above"){.didact})
 
-open [localhost:8080](http://localhost:8080) in your browser. 
-
-Now, invoke the hello endpoint using the following curl command:
-
-open [localhost:8080/hello](http://localhost:8080/hello) in your browser or you can also do a curl on a separate terminal
+open [localhost:8080/hello/greeting/quarkus](http://localhost:8080/hello/greeting/quarkus) in your browser or you can also do a curl on a separate terminal
 
 ```
-curl http://localhost:8080/hello
+curl http://localhost:8080/hello/greeting/quarkus
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello/greeting/quarkus%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 
-Open the Hello World program in `GreetingResource.java` and change `return "hello";` to `return "hola";` in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}).
-
-Invoke the hello endpoint again using the following curl command:
-
-open [localhost:8080/hello](http://localhost:8080/hello) in your browser or you can also do a curl on a separate terminal
-
-```
-curl http://localhost:8080/hello
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
-
-> **Note:** This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We’ll use this later.
-
-## 3. Stop Live Coding
+## 3. Cleanup
 
 [**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=QuarkusTerm&completion=Quarkus%20K%20Hello%20World%20interrupted. "Interrupt the current operation on the terminal"){.didact},
 or hit `ctrl+c` on the terminal window.
 
-Open the Hello World program in `GreetingResource.java` and change `return "hola";` to `return "hello";` again in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}).
 
-## 4. Package the app
+## 4. Congratulations!
 
-Quarkus apps can be packaged as an executable JAR file or a native binary. We’ll cover native binaries later, so for now, let’s package as an executable JAR.
+It’s a familiar CDI-based environment for you Enterprise Java developers out there, with powerful mechanisms to reload your code as you type (or very close to realtime). 
 
-```
-./mvnw -DskipTests clean package
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$mvn%20-DskipTests%20clean%20package&completion=maven%20clean%20package. "Opens a new terminal and sends the command above"){.didact})
-
-## 5. Run the executable JAR
-
-Run the packaged application. In a Terminal, run the following command:
-
-```
-java -Dquarkus.http.port=8081 -jar target/*-runner.jar
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$java%20-Dquarkus.http.port=8081%20-jar%20target/*-runner.jar&completion=java%20-jar%20*.jar. "Opens a new terminal and sends the command above"){.didact})
-
-> **Note** We use -Dquarkus.http.port=8081 to avoid conflicting with port 8080 used for Live Coding mode
-
-Invoke the hello endpoint using the following curl command:
-
-open [localhost:8081/hello](http://localhost:8081/hello) in your browser or you can also do a curl on a separate terminal
-
-```
-curl http://localhost:8081/hello
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8081/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
-
-## 5. Cleanup
-
-[**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=QuarkusTerm&completion=Quarkus%20K%20Hello%20World%20interrupted. "Interrupt the current operation on the terminal"){.didact},
-or hit `ctrl+c` on the terminal window.
-
-You should see a "hello" as the output.
-
-## 6. Congratulations!
-
-You’ve seen how to build a basic app, package it as an executable JAR and start it up very quickly. The JAR file can be used like any other executable JAR file (e.g. running it as-is, packaging as a Linux container, etc.)
-
-In the next step we’ll inject a custom bean to showcase Quarkus' CDI capabilities.
+In the next step, we’ll create some tests for our app, which should also be familiar to all developers.

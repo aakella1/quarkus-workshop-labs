@@ -47,7 +47,7 @@ You need to connect to an OpenShift cluster in order to run the examples.
 
 ## 1. Quick Peek - Quarkus Hello World
 
-The Hello World program is in `GreetingResource.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}).
+The Hello World program is in `GreetingResourceBasic.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResourceBasic.java&completion=Opened%20the%20GreetingResourceBasic.java%20file "Opens the GreetingResourceBasic.java file"){.didact}).
 
 > **Note:** Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
 
@@ -75,7 +75,7 @@ curl http://localhost:8080/hello
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 
-Open the Hello World program in `GreetingResource.java` and change `return "hello";` to `return "hola";` in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}).
+Open the Hello World program in `GreetingResourceBasic.java` and change `return "hello";` to `return "hola";` in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResourceBasic.java&completion=Opened%20the%20GreetingResourceBasic.java%20file "Opens the GreetingResourceBasic.java file"){.didact}).
 
 Invoke the hello endpoint again using the following curl command:
 
@@ -93,7 +93,7 @@ curl http://localhost:8080/hello
 [**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=QuarkusTerm&completion=Quarkus%20K%20Hello%20World%20interrupted. "Interrupt the current operation on the terminal"){.didact},
 or hit `ctrl+c` on the terminal window.
 
-Open the Hello World program in `GreetingResource.java` and change `return "hola";` to `return "hello";` again in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResource.java&completion=Opened%20the%20GreetingResource.java%20file "Opens the GreetingResource.java file"){.didact}).
+Open the Hello World program in `GreetingResourceBasic.java` and change `return "hola";` to `return "hello";` again in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResourceBasic.java&completion=Opened%20the%20GreetingResourceBasic.java%20file "Opens the GreetingResourceBasic.java file"){.didact}).
 
 ## 4. Package the app
 
@@ -128,8 +128,6 @@ curl http://localhost:8081/hello
 
 [**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=QuarkusTerm&completion=Quarkus%20K%20Hello%20World%20interrupted. "Interrupt the current operation on the terminal"){.didact},
 or hit `ctrl+c` on the terminal window.
-
-You should see a "hello" as the output.
 
 ## 6. Congratulations!
 
