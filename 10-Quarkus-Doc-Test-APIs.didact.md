@@ -20,7 +20,7 @@ We need to add another extension for OpenAPI. Run the following command:
 ```
 mvn quarkus:add-extension -Dextensions="openapi" -f .
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QNativeTerm$$mvn%20quarkus:add-extension%20-Dextensions="openapi"%20-f%20.&completion=Run%20Quarkus%20add-extension%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$mvn%20quarkus:add-extension%20-Dextensions="openapi"%20-f%20.&completion=Run%20Quarkus%20add-extension%20command. "Opens a new terminal and sends the command above"){.didact})
 
 This will add the necessary extension for using OpenAPI, and a graphical frontend extension called **Swagger** which we’ll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
 

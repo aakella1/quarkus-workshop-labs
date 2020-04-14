@@ -1,42 +1,56 @@
-Event-driven Messaging
+# Quarkus Event-driven Messaging
+
 Quarkus allows different beans to interact using asynchronous messages, enforcing loose-coupling. The messages are sent to virtual addresses. It offers 3 types of delivery mechanism:
 
-Point-to-Point - send the message, one consumer receives it. If several consumers listen to the address, a round robin is applied;
+- **Point-to-Point** - send the message, one consumer receives it. If several consumers listen to the address, a round robin is applied;
 
-Publish/Subscribe - publish a message, all the consumers listening to the address are receiving the message;
+- **Publish/Subscribe** - publish a message, all the consumers listening to the address are receiving the message;
 
-Request/Reply - send the message and expect a response. The receiver can respond to the message in an asynchronous-fashion
+- **Request/Reply** - send the message and expect a response. The receiver can respond to the message in an asynchronous-fashion
 
 All these delivery mechanism are non-blocking, and provide one of the fundamental building blocks of reactive systems which promise better performance, reduced developer burden, better isolation between services, and improved recovery from failure.
 
-The asynchronous message passing feature in Quarkus allows replying to messages — which is not supported by Reactive Messaging. However, it is limited to single-event behavior (no stream) and to local messages.
+>The asynchronous message passing feature in Quarkus allows replying to messages — which is not supported by Reactive Messaging. However, it is limited to single-event behavior (no stream) and to local messages.
 
-Add extension
-This mechanism uses the Vert.x EventBus, so you need to enable the vertx extension to use this feature. Add the extension in the Terminal using this command:
+## 1. Add extension
 
-mvn quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
-Eclipse Vert.x is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
+This mechanism uses the `Vert.x EventBus`, so you need to enable the `vertx` extension to use this feature. Add the extension in the Terminal using this command:
+
+```
+mvn quarkus:add-extension -Dextensions="vertx" -f .
+```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$mvn%20quarkus:add-extension%20-Dextensions="vertx"%20-f%20.&completion=Run%20Quarkus%20add-extension%20command. "Opens a new terminal and sends the command above"){.didact})
+
+> Eclipse `Vert.x` is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
 
 Quarkus provides 3 Vert.x APIs:
 
-bare - for advanced usage or if you have existing Vert.x code you want to reuse in your Quarkus application
+- *bare* - for advanced usage or if you have existing Vert.x code you want to reuse in your Quarkus application
 
-Axle - works well with Quarkus and MicroProfile APIs (CompletionStage for single results and Publisher for streams)
+- *Axle* - works well with Quarkus and MicroProfile APIs (`CompletionStage` for single results and `Publisher` for streams)
 
-Rx Java 2 - when you need support for a wide range of data transformation operators on your streams
+- *Rx Java 2* - when you need support for a wide range of data transformation operators on your streams
 
 We’re using the Axle variant here, which provides good support for async operations in HTTP resources.
 
-Create RESTful resource
-We’ll start by creating a new asynchronous endpoint. Open the PersonResource class and add a new field which will provide access to the Vert.x event bus which is used to pass messages between components:
+## 2. Create RESTful resource
 
+We’ll start by creating a new asynchronous endpoint. Open the `PersonResourceSwagger` class ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/PersonResourceSwagger.java&completion=Opened%20the%20PersonResourceSwagger.java%20file "Opens the PersonResourceSwagger.java file"){.didact}) and add a new field which will provide access to the Vert.x event bus which is used to pass messages between components:
+
+```
     @Inject EventBus bus; 
+```
+
 You’ll also need to add more import statements at the top:
 
+```
 import io.vertx.axle.core.eventbus.EventBus;
 import javax.inject.Inject;
+```
+
 Next, create two new endpoints in the same class which creates new people in our database given a name, and finds people by their name:
 
+```
     @POST
     @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,37 +65,36 @@ Next, create two new endpoints in the same class which creates new people in our
     public Person byName(@PathParam("name") String name) {
         return Person.find("name", name).firstResult();
     }
-send the name to the add-person address
+```
+
+send the name to the `add-person` address
 when we get the reply, extract the body and send this as response to the user
+
 And add the imports:
 
+```
 import javax.ws.rs.POST;
 import java.util.concurrent.CompletionStage;
 import io.vertx.axle.core.eventbus.Message;
+```
+
 This uses the request/reply dispatching mechanism. Instead of implementing the business logic inside the JAX-RS endpoint, we are sending a message. This message is consumed by another bean and the response is sent using the reply mechanism.
 
-The EventBus object provides methods to:
+The `EventBus` object provides methods to:
 
-Send a message to a specific address - one single consumer receives the message
+- Send a message to a specific address - one single consumer receives the message
 
-Publish a message to a specific address - all consumers receive the messages
+- Publish a message to a specific address - all consumers receive the messages
 
-Send a message and expect reply
+- Send a message and expect reply
 
-With this endpoint we can POST to the /person/joe endpoint to create a new user given the name.
+With this endpoint we can POST to the `/personswagger/joe` endpoint to create a new user given the name.
 
-Try it, and fail
-With our endpoint implemented and our app still running in Live Coding mode, confirm the new endpoint fails using the Terminal to execute:
+## 3. Create consumer
 
-curl -i -X POST http://localhost:8080/person/joe
-This will fail with an 500 Internal Server Error. If you look at the Live Coding terminal, you’ll also see the reason:
+Create a new class file in the `org.acme.people.service` package called `PersonService.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/service/PersonService.java&completion=Opened%20the%20PersonService.java%20file "Opens the PersonService.java file"){.didact}). Use the following code to implement our message consumer:
 
-ERROR [org.jbo.res.res.i18n] (executor-thread-1) RESTEASY002020: Unhandled asynchronous exception, sending back 500: (NO_HANDLERS,-1) No handlers for address add-person
-We posted the message to the Vert.x event bus at the add-person address, but there’s nothing to receive it!
-
-Create consumer
-Create a new class file in the org.acme.people.service package called PersonService.java. Use the following code to implement our message consumer:
-
+```
 package org.acme.people.service;
 
 import java.time.LocalDate;
@@ -111,47 +124,67 @@ public class PersonService {
     }
 
 }
-By default, the code consuming the event must be non-blocking, as it’s called on the Vert.x event loop. Since our method will block to wait for the transaction, we use blocking = true to force this consumer to be run in a worker thread.
-A new Person entity is created and persisted
-The return value of a method annotated with @ConsumeEvent is used as response to the incoming message.
-This bean receives the name, and creates a new Person entity and persists it, and then echos back the name (or a well defined failure if things go wrong).
+```
 
-Let’s try our test again:
+- By default, the code consuming the event must be non-blocking, as it’s called on the Vert.x event loop. Since our method will block to wait for the transaction, we use `blocking = true` to force this consumer to be run in a worker thread.
+- A new Person entity is created and persisted
+- The return value of a method annotated with `@ConsumeEvent` is used as response to the incoming message.
 
-curl -X POST http://localhost:8080/person/joe
+This bean receives the name, and creates a new `Person` entity and persists it, and then echos back the name (or a well defined failure if things go wrong).
+
+Let’s try our test:
+
+```
+curl -X POST http://localhost:8080/personswagger/joe | jq
+```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20-X%20POST%20http://localhost:8080/personswagger/joe%20-w%20"\n"%20|jq&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+
 You should get back Joe!
-
+```
 {
   "id": 1004,
   "birth": "2000-03-15",
   "eyes": "BROWN",
   "name": "joe"
 }
-The id may be different since its auto-generated
-The eye color you see here may be difference, since it’s randomly generated in the addPerson() method you added!
+```
+
+- The id may be different since its auto-generated
+- The eye color you see here may be difference, since it’s randomly generated in the `addPerson()` method you added!
+
 Now let’s re-confirm Joe is present:
 
-curl -s http://localhost:8080/person/name/joe | jq
+```
+curl -s http://localhost:8080/personswagger/name/joe | jq
+```
+
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20-s%20http://localhost:8080/personswagger/name/joe%20-w%20"\n"%20|jq&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+
 You should also get back Joe!
 
+```
 {
   "id": 1004,
   "birth": "2000-03-15",
   "eyes": "BROWN",
   "name": "joe"
 }
-The eye color you see here may be difference, since it’s randomly generated in the addPerson() method you added!
+```
+
+- The eye color you see here may be difference, since it’s randomly generated in the addPerson() method you added!
+
 To better understand, let’s detail how the HTTP request/response has been handled:
 
-The request is received by the addPerson method
+- The request is received by the addPerson method
 
-a message containing the desired name is sent to the event bus
+- a message containing the desired name is sent to the event bus
 
-Another bean receives this message and computes the response
+- Another bean receives this message and computes the response
 
-This response is sent back using the reply mechanism
+- This response is sent back using the reply mechanism
 
-Once the reply is received by the sender, the content is written to the HTTP response
+- Once the reply is received by the sender, the content is written to the HTTP response
 
-Congratulations!
+## 4. Congratulations!
+
 In this exercise you learned how Quarkus allows different beans to interact using asynchronous messages. We’ll take this to the next level in the next exercise.

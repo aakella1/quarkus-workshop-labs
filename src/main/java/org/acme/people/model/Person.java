@@ -11,8 +11,6 @@ import javax.persistence.Enumerated;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-import org.acme.people.model.EyeColor;
-
 @Entity
 public class Person extends PanacheEntity {
     // the person's name
