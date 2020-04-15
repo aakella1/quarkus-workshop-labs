@@ -21,7 +21,7 @@ When using the S2I approach, developers would rely on the OpenShift client (the 
     - `oc login`([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20login&completion=Run%20oc%20login%20command. "Opens a new terminal and sends the command above"){.didact})(enter the proper username and password)
     - `oc project xxxx` (select the project where you want the Quarkus demo deployments)
 - Use the oc new-app command to build the container image and create the OpenShift resources that describe the application.
-    - `oc new-app quay.io/quarkus/ubi-quarkus-native-s2i:20.0.0-java11~https://github.com/aakella1/quarkus-workshop-labs.git --name=quarkus-demo` ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20new-app%20quay.io/quarkus/ubi-quarkus-native-s2i:20.0.0-java11~https://github.com/aakella1/quarkus-workshop-labs.git%20--name=quarkus-demo&completion=Run%20oc%20new-app%20command. "Opens a new terminal and sends the command above"){.didact})
+    - `oc new-app quay.io/quarkus/ubi-quarkus-native-s2i:19.3.1-java11~https://github.com/aakella1/quarkus-workshop-labs.git --name=quarkus-demo` ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20new-app%20quay.io/quarkus/ubi-quarkus-native-s2i:19.3.1-java11~https://github.com/aakella1/quarkus-workshop-labs.git%20--name=quarkus-demo&completion=Run%20oc%20new-app%20command. "Opens a new terminal and sends the command above"){.didact})
 - The OpenShift client command creates OpenShift resources to build and deploy the application.
 - The build configuration resource starts a source build that runs Maven to generate the application package (JAR) and create the application container image containing the application package. You can trace the logs using the command below.
     - `oc logs -f bc/quarkus-demo` ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20logs%20-f%20bc/quarkus-demo&completion=Run%20oc%20logs%20command. "Opens a new terminal and sends the command above"){.didact})
@@ -78,9 +78,9 @@ In Visual Studio Code, login to OpenShift as shown in the diagram below:
 
 First, create a new binary build within OpenShift by opening a Terminal and running:
 ```
-oc new-build quay.io/quarkus/ubi-quarkus-native-binary-s2i:20.0.0 --binary  --name=people -l app=people 
+oc new-build quay.io/quarkus/ubi-quarkus-native-binary-s2i:19.3.1 --binary  --name=people -l app=people 
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20new-build%20quay.io/quarkus/ubi-quarkus-native-binary-s2i:20.0.0%20--binary%20--name=people%20-l%20app=people&completion=Run%20oc%20new-build%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20new-build%20quay.io/quarkus/ubi-quarkus-native-binary-s2i:19.3.1%20--binary%20--name=people%20-l%20app=people&completion=Run%20oc%20new-build%20command. "Opens a new terminal and sends the command above"){.didact})
 
 You should get a `-→ Success` message at the end.
 

@@ -443,7 +443,6 @@ Re-build the application as an executable JAR using the **Package App for OpenSh
 
 ```
 mvn -DskipTests clean package -Pnative -Dquarkus.native.container-build=true
-mvn package -DuberJar=true -DskipTests -f .
 ```
 
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QNativeTerm$$mvn%20-Dskiptests%20clean%20package%20-Pnative%20-Dquarkus.native.container-build=true&completion=Run%20Quarkus%20native%20mode. "Opens a new terminal and sends the command above"){.didact})
@@ -451,15 +450,21 @@ mvn package -DuberJar=true -DskipTests -f .
 Next, re-define the container build to use the OpenJDK image using these commands:
 ```
 oc delete bc/people 
+```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20delete%20bc/people&completion=Run%20oc%20delete%20bc%20command. "Opens a new terminal and sends the command above"){.didact})
+
+```
 oc new-build quay.io/quarkus/ubi-quarkus-native-binary-s2i:19.3.1 --binary  --name=people -l app=people 
 
 ```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20new-build%20quay.io/quarkus/ubi-quarkus-native-binary-s2i:19.3.1%20--binary%20--name=people%20-l%20app=people&completion=Run%20oc%20new-build%20command. "Opens a new terminal and sends the command above"){.didact})
 
 And now start the build using our executable JAR:
 
 ```
 oc start-build people --from-file target/*-runner.jar --follow
 ```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20start-build%20people%20--from-file%20target/*-runner%20--follow&completion=Run%20oc%20start-build%20command. "Opens a new terminal and sends the command above"){.didact})
 
 This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry. Wait for the build to finish.
 
@@ -469,7 +474,7 @@ You’ll see in the Topology view that the app is re-deployed with the new setti
 
 ![Diagram](docs/12-qnative-oc-redeploy.png)
 
-Remember in our `application.properties` we have pre-defined database connections for the `%prod` profile. When Quarkus runs in production, it will connect to the database you just deployed!
+Remember in our `application.properties`([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact}) we have pre-defined database connections for the `%prod` profile. When Quarkus runs in production, it will connect to the database you just deployed!
 
 ## 11. Access deployed app
 
@@ -479,6 +484,7 @@ We can access using `curl` once again to find everyone born in or before the yea
 ```
 curl -s $(oc get route people -o=go-template --template='{{ .spec.host }}')/person/birth/before/2000 | jq
 ```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20-s%20$(oc%20get%20route%20people%20-o=go-template%20--template='{{.spec.host}}')/person/birth/before/2000|%20jq&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 Now access the route url using http://ocp-project.apps.cluster-alpha-eeb8.alpha-eeb8.sandbox811.opentlc.com/datatable.html. It should look like:
 
