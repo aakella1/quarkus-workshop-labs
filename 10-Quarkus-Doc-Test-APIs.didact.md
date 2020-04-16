@@ -88,7 +88,7 @@ Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play 
 
 ![Diagram](docs/27-qtest-swagger.png)
 
-Using the UI, expand the `/person/birth/before/{year}` endpoint. Here you can basic detail about the endpoint: the name of the endpoint, parameters and their type, and the response type one can expect.
+Using the UI, expand the `/personswagger/birth/before/{year}` endpoint. Here you can basic detail about the endpoint: the name of the endpoint, parameters and their type, and the response type one can expect.
 
 ![Diagram](docs/28-qtest-swaggeryear.png)
 

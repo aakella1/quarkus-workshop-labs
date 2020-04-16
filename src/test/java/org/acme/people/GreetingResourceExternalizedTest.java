@@ -25,7 +25,7 @@ public class GreetingResourceExternalizedTest {
         String uuid = UUID.randomUUID().toString();
         given()
           .pathParam("name", uuid)
-          .when().get("/hello/greeting/{name}")
+          .when().get("/helloext/greeting/{name}")
           .then()
             .statusCode(200)
             .body(startsWith("hello " + uuid));

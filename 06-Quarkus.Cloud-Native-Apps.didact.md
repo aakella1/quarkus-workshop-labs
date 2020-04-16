@@ -225,36 +225,15 @@ public class DatabaseConnectionHealthCheck implements HealthCheck {
     }
 }
 ```
-Re-run the health check test:
-```
-curl -i http://localhost:8080/health/live
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/health/live%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
-
-You should see at the beginning the HTTP response:
-```
-HTTP/1.1 503 Service Unavailable
-```
-
-And the returned content should begin with `"status": "DOWN"` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed:
-```
-        {
-            "name": "Database connection health check",
-            "status": "DOWN",
-            "data": {
-                "error": "Cannot contact database"
-            }
-        },
-```
 
 ## 7. Fix Health Check
 
-We shouldn’t leave this application with a health check in DOWN state. Because we are running Quarkus dev mode, add this to to the end of the `src/main/resources/application.properties` file ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact}), uncomment the line below and save the properties file:
+Because we are running Quarkus dev mode, add this to to the end of the `src/main/resources/application.properties` file ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact}), uncomment the line below and save the properties file:
 ```
 database.up=true
 ```
 
-And access again using the same `curl` command — it should be `UP`!
+And access using the `curl` command — the health-check should show `UP`!
 
 ```
 curl -i http://localhost:8080/health/live

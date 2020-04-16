@@ -25,12 +25,12 @@ mvn compile quarkus:dev
 
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$mvn%20compile%20quarkus:dev&completion=Run%20live%20coding. "Opens a new terminal and sends the command above"){.didact})
 
-open [localhost:8080/hello/lastletter/Foo](http://localhost:8080/hello/lastletter/Foo) in your browser or you can also do a curl on a separate terminal
+open [localhost:8080/helloerror/lastletter/Foo](http://localhost:8080/helloerror/lastletter/Foo) in your browser or you can also do a curl on a separate terminal
 
 ```
-curl http://localhost:8080/hello/lastletter/Foo
+curl http://localhost:8080/helloerror/lastletter/Foo
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello/lastletter/Foo%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/helloerror/lastletter/Foo%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 
 Due to the bug, nothing is returned from curl. It should have given us back an `o`. You’ll also see `Got last letter: ` in the console output of the Quarkus app terminal.
@@ -75,12 +75,12 @@ To debug the app, let’s step through our function that has the bug. In the lef
 
 Now that we have a breakpoint, in a Terminal issue the same `curl` command as before:
 
-open [localhost:8080/hello/lastletter/Foo](http://localhost:8080/hello/lastletter/Foo) in your browser or you can also do a curl on a separate terminal
+open [localhost:8080/helloerror/lastletter/Foo](http://localhost:8080/helloerror/lastletter/Foo) in your browser or you can also do a curl on a separate terminal
 
 ```
-curl http://localhost:8080/hello/lastletter/Foo
+curl http://localhost:8080/helloerror/lastletter/Foo
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello/lastletter/Foo%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/helloerror/lastletter/Foo%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 This time, the command will appear to hang as the breakpoint has been reached. The line where you set the breakpoint will be highlighted:
 
@@ -124,9 +124,9 @@ Fix the code by changing the line that calls `substring()` to read:
 With the bug fixed, re-trigger the method by running the `curl` command again in a Terminal:
 
 ```
-curl http://localhost:8080/hello/lastletter/Foo
+curl http://localhost:8080/helloerror/lastletter/Foo
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello/lastletter/Foo%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/helloerror/lastletter/Foo%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 The breakpoint will be hit once again. Step over the lines to verify the value of `lastLetter` is correct and you see a proper `Got last letter: o` on the console. before the method returns. You’ve fixed the bug!
 
@@ -140,7 +140,7 @@ Click **Stop** button to quit the debugging session.
 
 ## 8. Cleanup
 
-[**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=QuarkusTerm&completion=Quarkus%20K%20Hello%20World%20interrupted. "Interrupt the current operation on the terminal"){.didact},
+[**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=QuarkusTerm&completion=Quarkus%20K%20hello%20World%20interrupted. "Interrupt the current operation on the terminal"){.didact},
 or hit `ctrl+c` on the terminal window.
 
 ## 7. Congratulations!

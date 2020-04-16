@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 @ApplicationScoped
 public class NameGenerator {
 
-    @Outgoing("generated-name")           
+    //Instruct Reactive Messaging to dispatch the items from returned stream to generated-name
+    @Outgoing("generated-name")      
+    //The method returns a RX Java 2 stream (Flowable) emitting a random name every 5 seconds 
     public Flowable<String> generate() {  
         return Flowable.interval(5, TimeUnit.SECONDS)
                 .map(tick -> CuteNameGenerator.generate());

@@ -12,7 +12,7 @@ import javax.ws.rs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("/hello")
+@Path("/helloerror")
 public class GreetingResourceError {
 
     public static final Logger log = LoggerFactory.getLogger(GreetingResourceError.class);
@@ -27,19 +27,14 @@ public class GreetingResourceError {
         return service.greeting(name);
     }
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "hello";
-    }
 
     @GET
     @Path("/lastletter/{name}")
     @Produces(MediaType.TEXT_PLAIN)
     public String lastLetter(@PathParam("name") String name) {
         int len = name.length();
-        String lastLetter = name.substring(len);
-        //String lastLetter = name.substring(len - 1);
+        //String lastLetter = name.substring(len);
+        String lastLetter = name.substring(len - 1);
         log.info("Got last letter: " + lastLetter);
         return lastLetter;
     }

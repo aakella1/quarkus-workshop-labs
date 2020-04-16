@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("/hello")
+@Path("/hellobasic")
 public class GreetingResourceBasic {
 
     public static final Logger log = LoggerFactory.getLogger(GreetingResourceBasic.class);

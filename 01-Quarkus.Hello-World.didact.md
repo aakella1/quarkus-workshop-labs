@@ -9,6 +9,8 @@ The Hello World program is in `GreetingResourceBasic.java` ([open](didact://?com
 
 > **Note:** Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
 
+Before we get started, let us copy the values from `application.properties.localhost` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties.localhost&completion=Opened%20the%20application.properties.localhost%20file "Opens the application.properties.localhost file"){.didact}) into `application.properties` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact}) file.
+
 ## 2. Running in Dev Mode - Quarkus Hello World 
 
 **Live Coding** (also referred to as dev mode) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and efficient style of developing that you will use throughout the lab.
@@ -25,24 +27,24 @@ open [localhost:8080](http://localhost:8080) in your browser.
 
 Now, invoke the hello endpoint using the following curl command:
 
-open [localhost:8080/hello](http://localhost:8080/hello) in your browser or you can also do a curl on a separate terminal
+open [localhost:8080/hellobasic](http://localhost:8080/hellobasic) in your browser or you can also do a curl on a separate terminal
 
 ```
-curl http://localhost:8080/hello
+curl http://localhost:8080/hellobasic
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hellobasic%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 
 Open the Hello World program in `GreetingResourceBasic.java` and change `return "hello";` to `return "hola";` in the editor([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/rest/GreetingResourceBasic.java&completion=Opened%20the%20GreetingResourceBasic.java%20file "Opens the GreetingResourceBasic.java file"){.didact}).
 
 Invoke the hello endpoint again using the following curl command:
 
-open [localhost:8080/hello](http://localhost:8080/hello) in your browser or you can also do a curl on a separate terminal
+open [localhost:8080/hellobasic](http://localhost:8080/hellobasic) in your browser or you can also do a curl on a separate terminal
 
 ```
-curl http://localhost:8080/hello
+curl http://localhost:8080/hellobasic
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8080/hellobasic%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 > **Note:** This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We’ll use this later.
 
@@ -75,12 +77,12 @@ java -Dquarkus.http.port=8081 -jar target/*-runner.jar
 
 Invoke the hello endpoint using the following curl command:
 
-open [localhost:8081/hello](http://localhost:8081/hello) in your browser or you can also do a curl on a separate terminal
+open [localhost:8081/hellobasic](http://localhost:8081/hellobasic) in your browser or you can also do a curl on a separate terminal
 
 ```
-curl http://localhost:8081/hello
+curl http://localhost:8081/hellobasic
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8081/hello%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20http://localhost:8081/hellobasic%20;%20echo%20''&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
 ## 5. Cleanup
 

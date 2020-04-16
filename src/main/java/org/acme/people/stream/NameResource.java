@@ -16,13 +16,20 @@ import org.jboss.resteasy.annotations.SseElementType;
 public class NameResource {
 
     @Inject
+    //Injects the `my-data-stream` stream using the `@Channel` qualifier
     @Channel("my-data-stream") Publisher<String> names; 
 
     @GET
     @Path("/stream")
+    //Indicates that the content is sent using *Server Sent Events*
     @Produces(MediaType.SERVER_SENT_EVENTS)
+    //Indicates that the data contained within the server sent events is of type `text/plain`
     @SseElementType("text/plain") 
+    //Returns the stream (Reactive Stream)
     public Publisher<String> stream() { 
         return names;
     }
 }
+
+
+

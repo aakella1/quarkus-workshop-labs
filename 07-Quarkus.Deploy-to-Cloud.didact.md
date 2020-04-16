@@ -11,6 +11,8 @@ We can use two approaches to deploy to OpenShift.
 
 Both approaches are based on the source-to-image (S2I) feature, it may sound strange having a binary option. Actually, both workflows rely on S2I builds using the Source strategy. The key difference is that the S2I approach generates deployable artifacts of your application inside OpenShift, while the binary approach generates these binary artifacts outside OpenShift. Both of them build the application container image inside OpenShift. We will work through both of them below.
 
+Before we get started, let us copy the values from `application.properties.openshift` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties.openshift&completion=Opened%20the%20application.properties.openshift%20file "Opens the application.properties.openshift file"){.didact}) into `application.properties` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact}) file.
+
 ## 2. Source-2-Image (S2I) Approach
 
 When using the S2I approach, developers would rely on the OpenShift client (the oc command).
@@ -61,18 +63,18 @@ Let’s rebuild our native image with all our changes thus far. Run the *Build N
 mvn -DskipTests clean package -Pnative -Dquarkus.native.container-build=true
 ```
 
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$mvn%20-Dskiptests%20clean%20package%20-Pnative%20-Dquarkus.native.container-build=true&completion=Run%20Quarkus%20native%20mode. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QNativeTerm$$mvn%20-Dskiptests%20clean%20package%20-Pnative%20-Dquarkus.native.container-build=true&completion=Run%20Quarkus%20native%20mode. "Opens a new terminal and sends the command above"){.didact})
 
-As you recall, the output of this process is a native Linux binary. Let’s deploy it to our cluster.
+As you recall, the output of this process is a native Linux binary (as we have the option `-Dquarkus.native.container-build=true`). Let’s deploy it to our cluster.
 
 ### 2.Login to OpenShift in VSCode terminal
 
 In Visual Studio Code, login to OpenShift as shown in the diagram below:
 
-![Diagram](docs/11-qnative-oc-login.png)
-
 - `oc login`(enter the proper username and password)([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20login&completion=Run%20oc%20login%20command. "Opens a new terminal and sends the command above"){.didact})(enter the proper username and password)
 - `oc project xxxx` (select the project where you want the Quarkus demo deployments)
+
+![Diagram](docs/11-qnative-oc-login.png)
 
 ### 3. Deploy to OpenShift
 

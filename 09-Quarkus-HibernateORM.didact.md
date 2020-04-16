@@ -438,7 +438,7 @@ Click **Create**.
 
 In previous steps we deployed our sample application as a native binary. Now let’s switch to a JVM-based deployment from here on out.
 
-Re-build the application as an executable JAR using the **Package App for OpenShift**:
+Re-build the application as an executable JAR 
 
 
 ```
@@ -486,7 +486,12 @@ curl -s $(oc get route people -o=go-template --template='{{ .spec.host }}')/pers
 ```
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=curlTerm$$curl%20-s%20$(oc%20get%20route%20people%20-o=go-template%20--template='{{.spec.host}}')/person/birth/before/2000|%20jq&completion=Run%20curl%20command. "Opens a new terminal and sends the command above"){.didact})
 
-Now access the route url using http://ocp-project.apps.cluster-alpha-eeb8.alpha-eeb8.sandbox811.opentlc.com/datatable.html. It should look like:
+Run the command
+```
+oc get route people -o=go-template --template='{{ .spec.host }}'/datatable.html ; echo ''
+```
+Open the URL in browser.
+
 
 ![Diagram](docs/25-qhibernate-datatable.png)
 

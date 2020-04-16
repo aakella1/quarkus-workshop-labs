@@ -39,7 +39,6 @@ public class GreetingResourceExternalized {
     public String greeting(@PathParam("name") String name) {
         return service.greeting(name);
     }
-
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {

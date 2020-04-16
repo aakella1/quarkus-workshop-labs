@@ -38,9 +38,10 @@ In this exercise, we are going to generate (random) names in one component. Thes
 
 ## 4. Create Kafka Cluster
 
-The Strimzi operator installs and manages Kafka clusters on Kubernetes. It’s been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
+The Strimzi operator installs and manages Kafka clusters on Kubernetes. You can go to "Operator Hub" and install the AMQ-Streams operator very easily. 
+Open [the AMQ-Streams blog](https://middlewareblog.redhat.com/2019/12/10/getting-started-with-the-red-hat-amq-streams-operator/) in your browser. 
 
-First, on the https://console-openshift-console.apps.cluster-alpha-eeb8.alpha-eeb8.sandbox811.opentlc.com/topology/ns/PLEASE ENTER USERID AT TOP OF PAGE-project[Topology View^], click **+Add** and, then From Catalog:
+First, on the OpenShift Developer view, click **+Add** and, then From Catalog:
 
 ![Diagram](docs/31-qstreaming-fromcat.png)
 
@@ -74,7 +75,7 @@ Then click **Create**.
 
 This will cause the Operator to provision a new Topic in the Kafka cluster.
 
-Back on the https://console-openshift-console.apps.cluster-alpha-eeb8.alpha-eeb8.sandbox811.opentlc.com/topology/ns/PLEASE ENTER USERID AT TOP OF PAGE-project[Topology View^], make sure all the Kafka and Zookeeper pods are up and running (with dark blue circles):
+Back on the OpenShift console, Developer view, make sure all the Kafka and Zookeeper pods are up and running (with dark blue circles):
 
 ![Diagram](docs/36-qstreaming-kafkaup.png)
 
@@ -98,108 +99,22 @@ The app consists of 3 components that pass messages via Kafka and an in-memory s
 ![Diagram](docs/37-qstreaming-kafkaarch.png)
 
 ## 8. Create name generator
-To start building the app, create a new Java class file in the `org.acme.people.stream` called `NameGenerator.java`. This class will generate random names and publish them to our Kafka topic for further processing. Use this code:
+To start building the app, create a new Java class file in the `org.acme.people.stream` called `NameGenerator.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/stream/NameGenerator.java&completion=Opened%20the%20NameGenerator.java%20file "Opens the NameGenerator.java file"){.didact}). This class will generate random names and publish them to our Kafka topic for further processing. 
 
-```
-package org.acme.people.stream;
-
-import io.reactivex.Flowable;
-import javax.enterprise.context.ApplicationScoped;
-import org.acme.people.utils.CuteNameGenerator;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import java.util.concurrent.TimeUnit;
-
-@ApplicationScoped
-public class NameGenerator {
-
-    @Outgoing("generated-name")           
-    public Flowable<String> generate() {  
-        return Flowable.interval(5, TimeUnit.SECONDS)
-                .map(tick -> CuteNameGenerator.generate());
-    }
-
-}
-```
-
-- Instruct Reactive Messaging to dispatch the items from returned stream to generated-name
-- The method returns a RX Java 2 stream (Flowable) emitting a random name every 5 seconds
-
-The method returns a Reactive Stream. The generated items are sent to the stream named `generated-name`. This stream is mapped to Kafka using the `application.properties` file that we will create soon.
+The method returns a Reactive Stream. The generated items are sent to the stream named `generated-name`. This stream is mapped to Kafka using the `application.properties`  ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact})file that we will create soon.
 
 ## 9. Add honorifics
 
 The name converter reads the names from Kafka, and transforms them, adding a random (English) honorific to the beginning of the name.
 
-Create a new Java class file in the same package called `NameConverter.java`. Use this code:
+Create a new Java class file in the same package called `NameConverter.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/stream/NameConverter.java&completion=Opened%20the%20NameConverter.java%20file "Opens the NameConverter.java file"){.didact}). 
 
-```
-package org.acme.people.stream;
-
-import javax.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import io.smallrye.reactive.messaging.annotations.Broadcast;
-
-@ApplicationScoped
-public class NameConverter {
-
-    private static final String[] honorifics = {"Mr.", "Mrs.", "Sir", "Madam", "Lord", "Lady", "Dr.", "Professor", "Vice-Chancellor", "Regent", "Provost", "Prefect"};
-
-    @Incoming("names")               
-    @Outgoing("my-data-stream")      
-    @Broadcast                       
-    public String process(String name) {
-        String honorific = honorifics[(int)Math.floor(Math.random() * honorifics.length)];
-        return honorific + " " + name;
-    }
-}
-```
-
-- Indicates that the method consumes the items from the `names`` topic
-- Indicates that the objects returned by the method are sent to the `my-data-stream` stream
-- Indicates that the item are dispatched to all *subscribers*
-
-The process method is called for every *Kafka* record from the `names` topic (configured in the application configuration). Every result is sent to the my-data-stream in-memory stream.
+The process method is called for every *Kafka* record from the `names` topic (configured in the application.properties configuration ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact})). Every result is sent to the my-data-stream in-memory stream.
 
 ## 10. Expose to front end
 
-Finally, let’s bind our stream to a JAX-RS resource. Create a new Java class in the same package called `NameResource.java`. Use this code:
+Finally, let’s bind our stream to a JAX-RS resource. Create a new Java class in the same package called `NameResource.java`([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/java/org/acme/people/stream/NameResource.java&completion=Opened%20the%20NameResource.java%20file "Opens the NameResource.java file"){.didact}). 
 
-```
-package org.acme.people.stream;
-
-import io.smallrye.reactive.messaging.annotations.Channel;
-import org.reactivestreams.Publisher;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import org.jboss.resteasy.annotations.SseElementType;
-
-/**
- * A simple resource retrieving the in-memory "my-data-stream" and sending the items as server-sent events.
- */
-@Path("/names")
-public class NameResource {
-
-    @Inject
-    @Channel("my-data-stream") Publisher<String> names; 
-
-    @GET
-    @Path("/stream")
-    @Produces(MediaType.SERVER_SENT_EVENTS)
-    @SseElementType("text/plain") 
-    public Publisher<String> stream() { 
-        return names;
-    }
-}
-```
-
-- Injects the `my-data-stream` stream using the `@Channel` qualifier
-- Indicates that the content is sent using *Server Sent Events*
-- Indicates that the data contained within the server sent events is of type `text/plain`
-- Returns the stream (Reactive Stream)
 
 >There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the D3.js library. The JavaScript that makes this call looks like this (do not copy this into anything!):
 >```
@@ -222,7 +137,7 @@ public class NameResource {
 
 ## 11. Configure application
 
-We need to configure the Kafka connector. This is done in the `application.properties` file (in the `src/main/resources` directory). The keys are structured as follows:
+We need to configure the Kafka connector. This is done in the `application.properties` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact})) file (in the `src/main/resources` directory). The keys are structured as follows:
 
 `mp.messaging.[outgoing|incoming].{channel-name}.property=value`
 
@@ -232,7 +147,7 @@ The `channel-name` segment must match the value set in the `@Incoming` and `@Out
 
 - `names` → source from which we read the names
 
-Add the following values to the app’s `src/main/resources/application.properties`:
+Check the following values in `src/main/resources/application.properties` ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact})):
 
 ```
 # Configure the Kafka sink (we write to it)
@@ -248,16 +163,15 @@ Add the following values to the app’s `src/main/resources/application.properti
 ```
 
 > The hostnames you see here will only make sense (be resolvable via DNS) when this app is run in the same Kubernetes namespace as the Kafka cluster you created earlier. So you’ll see this and other config values above prefixed with `%prod` which will not try to initialize Kafka when in `dev` mode.
-
-More details about this configuration is available on the Producer configuration and Consumer configuration section from the Kafka documentation.
-
 > What about `my-data-stream`? This is an in-memory stream, not connected to a message broker.
 
 ## 12. Rebuild Executable JAR
 
-Using the commands on the right, select **Package App for OpenShift**.
+```
+mvn -DskipTests clean package -Pnative -Dquarkus.native.container-build=true
+```
 
-
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QNativeTerm$$mvn%20-Dskiptests%20clean%20package%20-Pnative%20-Dquarkus.native.container-build=true&completion=Run%20Quarkus%20native%20mode. "Opens a new terminal and sends the command above"){.didact})
 
 You should see a bunch of log output that ends with a `SUCCESS` message.
 
@@ -268,12 +182,19 @@ And now start the build using our executable JAR:
 ```
 oc start-build people --from-file target/*-runner.jar --follow
 ```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20start-build%20people%20--from-file%20target/*-runner%20--follow&completion=Run%20oc%20start-build%20command. "Opens a new terminal and sends the command above"){.didact})
 
 The build should take a minute or two to complete.
 
 ## 14. Test
 
-Our application should be up and running in a few seconds after the build completes and generating names. To see if it’s working, access the http://people-PLEASE ENTER USERID AT TOP OF PAGE-project.apps.cluster-alpha-eeb8.alpha-eeb8.sandbox811.opentlc.com/names.html[graphical name cloud powered by Quarkus, MicroProfile and Kafka^]. You should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
+Our application should be up and running in a few seconds after the build completes and generating names. To see if it’s working, access the page `names.html`. You should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
+
+Run the command
+```
+oc get route people -o=go-template --template='{{ .spec.host }}'/names.html ; echo ''
+```
+Open the URL in browser.
 
 > It takes a few seconds to establish the connection to Kafka. If you don’t see new names generated every 5 seconds, reload the browser page to re-initialize the SSE stream.
 
