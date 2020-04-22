@@ -18,7 +18,8 @@ Before we get started, let us copy the values from `application.properties.opens
 When using the S2I approach, developers would rely on the OpenShift client (the oc command).
 
 - Clone the project to a local folder, so they can change the code to their liking and maybe test it outside of OpenShift.
-- Commit and push any changes to the origin git repository.
+- Commit and push any changes to the origin git repository. Note that I am using a specific git repository below, please change the url appropriately.
+    - Copy the content from application.properties.openshift file ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties.openshift&completion=Opened%20the%20application.properties.openshift%20file "Opens the application.properties.openshift file"){.didact}) and paste them in the application.properties file ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact})
 - Log in to OpenShift and create a new project or be in the right project as needed.
     - `oc login`([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=ocTerm$$oc%20login&completion=Run%20oc%20login%20command. "Opens a new terminal and sends the command above"){.didact})(enter the proper username and password)
     - `oc project xxxx` (select the project where you want the Quarkus demo deployments)
