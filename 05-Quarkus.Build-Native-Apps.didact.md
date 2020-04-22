@@ -75,9 +75,9 @@ In addition to the regular files, the build will produce `target/people-1.0-SNAP
 Since our environment here is Linux/mac, you can *just run it*. In the terminal, run:
 
 ```
-java -Dquarkus.http.port=8081 -jar target/*-runner.jar
+target/people-1.0-SNAPSHOT-runner
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$java%20-Dquarkus.http.port=8081%20-jar%20target/*-runner.jar&completion=java%20-jar%20*.jar. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=QuarkusTerm$$target/people-1.0-SNAPSHOT-runner&completion=Running%20native%20image. "Opens a new terminal and sends the command above"){.didact})
 
 > **Note** We use -Dquarkus.http.port=8081 to avoid conflicting with port 8080 used for Live Coding mode
 
