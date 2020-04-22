@@ -53,6 +53,8 @@ When using the binary approach, developers would:
 
 Let us walk through the steps below
 
+to start with, Copy the content from application.properties.openshift file ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties.openshift&completion=Opened%20the%20application.properties.openshift%20file "Opens the application.properties.openshift file"){.didact}) and paste them in the application.properties file ([open](didact://?commandId=vscode.openFolder&projectFilePath=src/main/resources/application.properties&completion=Opened%20the%20application.properties%20file "Opens the application.properties file"){.didact})
+
 ### 1.Build native image
 
 Keep in mind, we can package and deploy our application to a JVM. 
