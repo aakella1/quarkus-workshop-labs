@@ -34,3 +34,5 @@
 
 
 ![Diagram](docs/53-qarch-frameworks.png)
+
+![Diagram](docs/54-qarch-frameworks.png)
